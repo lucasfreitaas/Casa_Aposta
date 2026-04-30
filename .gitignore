@@ -27,7 +27,7 @@ thumb
 sketch
 
 # Adicione isso aqui:
-*.json
+# Removido *.json redundante
 sinuca-71370-firebase-adminsdk-fbsvc-048bb07f35.json
 
 # End of https://www.toptal.com/developers/gitignore/api/firebase,react
