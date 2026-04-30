@@ -8,12 +8,10 @@ import {
 } from 'firebase/firestore'
 import { db } from './firebaseConfig'
 import GameCard from './components/GameCard'
-import NewCompetitionModal from './components/NewCompetitionModal'
 
 export default function App() {
   const [competicoes, setCompeticoes] = useState([])
   const [loading, setLoading] = useState(true)
-  const [showNewModal, setShowNewModal] = useState(false)
   const [filtro, setFiltro] = useState('aberto') // 'aberto' | 'encerrado' | 'todos'
 
 
@@ -70,19 +68,6 @@ export default function App() {
               <p className="text-[10px] text-gray-400 font-semibold uppercase tracking-widest -mt-0.5">Sinuca</p>
             </div>
           </div>
-
-          {/* Botão nova competição */}
-          <button
-            id="open-new-competition-btn"
-            onClick={() => setShowNewModal(true)}
-            className="btn-primary"
-          >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M12 4v16m8-8H4" />
-            </svg>
-            <span className="hidden sm:inline">Nova Competição</span>
-            <span className="sm:hidden">Nova</span>
-          </button>
         </div>
       </header>
 
@@ -132,23 +117,12 @@ export default function App() {
             <div className="text-center">
               <p className="text-lg font-bold text-gray-700">Nenhuma competição encontrada</p>
               <p className="text-sm text-gray-400 mt-1">
-                {filtro === 'aberto'
-                  ? 'Clique em "Nova Competição" para começar.'
-                  : 'Tente outro filtro.'}
+                Tente outro filtro.
               </p>
             </div>
-            {filtro === 'aberto' && (
-              <button
-                id="empty-state-new-btn"
-                onClick={() => setShowNewModal(true)}
-                className="btn-primary mt-2"
-              >
-                + Nova Competição
-              </button>
-            )}
           </div>
         ) : (
-          <div className="grid gap-6 sm:grid-cols-1 lg:grid-cols-2">
+          <div className="grid gap-6 grid-cols-1">
             {competicoes.map(comp => (
               <GameCard key={comp.id} competicao={comp} />
             ))}
@@ -165,13 +139,6 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Modal nova competição */}
-      {showNewModal && (
-        <NewCompetitionModal 
-          onClose={() => setShowNewModal(false)} 
-          onCreated={() => setFiltro('aberto')} 
-        />
-      )}
     </div>
   )
 }

@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { useCompeticaoApostas } from '../hooks/useCompeticaoApostas'
 import BettorsTable from './BettorsTable'
 import BetModal from './BetModal'
-import ScoreModal from './ScoreModal'
-import { doc, updateDoc } from 'firebase/firestore'
 import { db } from '../firebaseConfig'
 import toast from 'react-hot-toast'
 
@@ -12,7 +10,6 @@ import toast from 'react-hot-toast'
  */
 export default function GameCard({ competicao }) {
   const [betTarget, setBetTarget] = useState(null)
-  const [showScoreModal, setShowScoreModal] = useState(false)
 
   const {
     competidor1,
@@ -50,20 +47,6 @@ export default function GameCard({ competicao }) {
 
   const isAberto = status === 'aberto'
   const isCancelado = status === 'cancelado'
-
-  async function handleCancelGame() {
-    if (window.confirm('Deseja fazer o cancelamento do evento? Essa ação é irreversível')) {
-      try {
-        await updateDoc(doc(db, 'competicoes', id), {
-          status: 'cancelado'
-        })
-        toast.success('Evento cancelado com sucesso.')
-      } catch (err) {
-        console.error(err)
-        toast.error('Erro ao cancelar o evento.')
-      }
-    }
-  }
 
   return (
     <>
@@ -130,7 +113,7 @@ export default function GameCard({ competicao }) {
         </div>
 
         {/* Tabelas lado a lado ou empilhadas */}
-        <div className="px-5 py-4 flex flex-col xl:flex-row gap-5">
+        <div className="px-5 py-4 flex flex-col md:flex-row gap-5">
           <BettorsTable
             apostas={apostasComp1}
             odd={oddComp1}
@@ -155,7 +138,7 @@ export default function GameCard({ competicao }) {
             <div className="flex gap-3 mb-3">
               <button
                 id={`bet-comp1-${id}`}
-                onClick={() => setBetTarget({ competidor: 'competidor1', nome: competidor1, odd: oddComp1 })}
+                onClick={() => setBetTarget({ competidor: 'competidor1', nome: competidor1, odd: oddComp1, totalCompetidor: totalComp1 })}
                 className="btn-primary flex-1 text-xs py-3"
               >
                 🎱 APOSTAR em {competidor1}
@@ -165,30 +148,13 @@ export default function GameCard({ competicao }) {
               </button>
               <button
                 id={`bet-comp2-${id}`}
-                onClick={() => setBetTarget({ competidor: 'competidor2', nome: competidor2, odd: oddComp2 })}
+                onClick={() => setBetTarget({ competidor: 'competidor2', nome: competidor2, odd: oddComp2, totalCompetidor: totalComp2 })}
                 className="btn-primary flex-1 text-xs py-3"
               >
                 🎱 APOSTAR em {competidor2}
                 <span className="ml-1 px-1.5 py-0.5 bg-white/20 rounded text-[10px] font-black">
                   {oddComp2.toFixed(2)}x
                 </span>
-              </button>
-            </div>
-            <div className="flex gap-2">
-              <button
-                onClick={() => setShowScoreModal(true)}
-                className="w-full btn-secondary text-xs border-dashed border-gray-300 text-gray-500 hover:text-gray-800 hover:border-gray-400"
-              >
-                🏁 Informar Placar e Encerrar Jogo
-              </button>
-              <button
-                onClick={handleCancelGame}
-                className="btn-ghost px-3 rounded-xl border border-transparent hover:border-red-200 text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                title="Cancelar Evento"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
               </button>
             </div>
           </div>
@@ -201,17 +167,10 @@ export default function GameCard({ competicao }) {
           competicao={competicao}
           competidor={betTarget.competidor}
           nomeCompetidor={betTarget.nome}
-          odd={betTarget.odd}
+          oddAtual={betTarget.odd}
+          totalCompetidor={betTarget.totalCompetidor}
           totalBanca={totalBanca}
           onClose={() => setBetTarget(null)}
-        />
-      )}
-
-      {/* Modal de placar */}
-      {showScoreModal && (
-        <ScoreModal
-          competicao={competicao}
-          onClose={() => setShowScoreModal(false)}
         />
       )}
     </>

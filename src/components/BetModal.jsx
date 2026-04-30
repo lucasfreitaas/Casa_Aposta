@@ -7,14 +7,21 @@ import toast from 'react-hot-toast'
 /**
  * Modal de aposta com QR Code PIX, ODD atual e cálculo de retorno em tempo real.
  */
-export default function BetModal({ competicao, competidor, nomeCompetidor, odd, totalBanca, onClose }) {
+export default function BetModal({ competicao, competidor, nomeCompetidor, oddAtual, totalCompetidor, totalBanca, onClose }) {
   const [nomeApostador, setNomeApostador] = useState('')
   const [valor, setValor] = useState('')
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
 
   const valorNum = Number(valor) || 0
-  const retornoEstimado = valorNum * odd
+  
+  // Calcula a nova ODD se a aposta for confirmada
+  // Se não houver aposta ou a nova banca for 0 (impossível se valor > 0), mantém a ODD atual
+  const novaBanca = totalBanca + valorNum
+  const novoTotalCompetidor = totalCompetidor + valorNum
+  const oddSimulada = novoTotalCompetidor > 0 ? (novaBanca / novoTotalCompetidor) : oddAtual
+
+  const retornoEstimado = valorNum * oddSimulada
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -90,9 +97,13 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, odd, 
 
         {/* ODD + Banca info */}
         <div className="px-6 pt-4 flex gap-3">
-          <div className="flex-1 rounded-xl bg-brand-50 border border-brand-100 px-4 py-3 text-center">
-            <p className="text-[10px] font-semibold text-brand-500 uppercase tracking-widest mb-0.5">ODD Atual</p>
-            <p className="text-2xl font-black text-brand-700">{odd.toFixed(2)}x</p>
+          <div className="flex-1 rounded-xl bg-brand-50 border border-brand-100 px-4 py-3 text-center transition-all">
+            <p className="text-[10px] font-semibold text-brand-500 uppercase tracking-widest mb-0.5">
+              {valorNum > 0 ? 'Nova ODD' : 'ODD Atual'}
+            </p>
+            <p className="text-2xl font-black text-brand-700">
+              {oddSimulada.toFixed(2)}x
+            </p>
           </div>
           <div className="flex-1 rounded-xl bg-gray-50 border border-gray-100 px-4 py-3 text-center">
             <p className="text-[10px] font-semibold text-gray-400 uppercase tracking-widest mb-0.5">Banca Total</p>
@@ -149,7 +160,7 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, odd, 
                   Retorno se ganhar
                 </p>
                 <p className="text-xs text-emerald-500 mt-0.5">
-                  {valorNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} × {odd.toFixed(2)}
+                  {valorNum.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} × {oddSimulada.toFixed(2)}
                 </p>
               </div>
               <p className="text-xl font-black text-emerald-700">
