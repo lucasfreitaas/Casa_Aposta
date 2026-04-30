@@ -51,7 +51,8 @@ export default function App() {
   const FILTROS = [
     { key: 'aberto',     label: 'Abertos'     },
     { key: 'encerrado',  label: 'Encerrados'  },
-    { key: 'todos',      label: 'Todos'        },
+    { key: 'cancelado',  label: 'Cancelados'  },
+    { key: 'todos',      label: 'Todos'       },
   ]
 
   return (
