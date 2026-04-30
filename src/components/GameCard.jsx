@@ -16,6 +16,7 @@ export default function GameCard({ competicao }) {
     competidor2,
     dataHora,
     status,
+    apostasFechadas,
     id,
     vencedor,
     placar,
@@ -69,18 +70,27 @@ export default function GameCard({ competicao }) {
                 {dataFormatada}
               </p>
             </div>
-            <span className={
-              isAberto ? 'badge-open flex-shrink-0' :
-              isCancelado ? 'badge-closed bg-red-50 text-red-600 border-red-200 flex-shrink-0' :
-              'badge-closed flex-shrink-0'
-            }>
-              <span className={`w-1.5 h-1.5 rounded-full ${
-                isAberto ? 'bg-emerald-500' :
-                isCancelado ? 'bg-red-500' :
-                'bg-gray-400'
-              }`} />
-              {isAberto ? 'Aberto' : isCancelado ? 'Cancelado' : 'Encerrado'}
-            </span>
+            <div className="flex gap-2">
+              <span className={
+                isAberto ? 'badge-open flex-shrink-0' :
+                isCancelado ? 'badge-closed bg-red-50 text-red-600 border-red-200 flex-shrink-0' :
+                'badge-closed flex-shrink-0'
+              }>
+                <span className={`w-1.5 h-1.5 rounded-full ${
+                  isAberto ? 'bg-emerald-500' :
+                  isCancelado ? 'bg-red-500' :
+                  'bg-gray-400'
+                }`} />
+                {isAberto ? 'Aberto' : isCancelado ? 'Cancelado' : 'Encerrado'}
+              </span>
+
+              {isAberto && apostasFechadas && (
+                <span className="badge-closed bg-amber-50 text-amber-700 border-amber-200 flex-shrink-0">
+                  <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
+                  Apostas Fechadas
+                </span>
+              )}
+            </div>
           </div>
 
           {/* Banca total */}
@@ -133,7 +143,7 @@ export default function GameCard({ competicao }) {
         </div>
 
         {/* Footer com botões */}
-        {isAberto && (
+        {isAberto && !apostasFechadas && (
           <div className="px-5 pb-5">
             <div className="flex gap-3 mb-3">
               <button
