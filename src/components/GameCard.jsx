@@ -14,6 +14,7 @@ export default function GameCard({ competicao }) {
   const {
     competidor1,
     competidor2,
+    modalidade,
     dataHora,
     status,
     apostasFechadas,
@@ -57,6 +58,11 @@ export default function GameCard({ competicao }) {
         <div className="px-5 pt-5 pb-4 border-b border-gray-100">
           <div className="flex items-start justify-between gap-4">
             <div className="min-w-0">
+              {modalidade && (
+                <span className="inline-block px-2 py-0.5 mb-2 rounded bg-brand-50 text-brand-700 text-[10px] font-bold uppercase tracking-wider border border-brand-100">
+                  {modalidade}
+                </span>
+              )}
               <h3 className="text-base font-bold text-gray-900 truncate leading-snug">
                 <span className="text-brand-600">{competidor1}</span>
                 <span className="mx-2 text-gray-300 font-normal">vs</span>

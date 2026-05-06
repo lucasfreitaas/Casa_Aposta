@@ -11,12 +11,13 @@ import toast from 'react-hot-toast'
 export default function NewCompetitionModal({ onClose, onCreated }) {
   const [comp1, setComp1] = useState('')
   const [comp2, setComp2] = useState('')
+  const [modalidade, setModalidade] = useState('')
   const [dataHora, setDataHora] = useState('')
   const [loading, setLoading] = useState(false)
 
   async function handleSubmit(e) {
     e.preventDefault()
-    if (!comp1.trim() || !comp2.trim() || !dataHora) {
+    if (!comp1.trim() || !comp2.trim() || !dataHora || !modalidade.trim()) {
       toast.error('Preencha todos os campos.')
       return
     }
@@ -30,6 +31,7 @@ export default function NewCompetitionModal({ onClose, onCreated }) {
       await addDoc(collection(db, 'competicoes'), {
         competidor1: comp1.trim(),
         competidor2: comp2.trim(),
+        modalidade:  modalidade.trim(),
         dataHora:    dataHora, // Salva como YYYY-MM-DD
         status:      'aberto',
         criadoEm:    serverTimestamp(),
@@ -78,6 +80,21 @@ export default function NewCompetitionModal({ onClose, onCreated }) {
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-5">
+
+          {/* Modalidade */}
+          <div>
+            <label htmlFor="comp-modality" className="label">Modalidade</label>
+            <input
+              id="comp-modality"
+              type="text"
+              className="input-field"
+              placeholder="Ex: Sinuca, Futebol, etc."
+              value={modalidade}
+              onChange={e => setModalidade(e.target.value)}
+              required
+              maxLength={50}
+            />
+          </div>
 
           {/* VS layout */}
           <div className="flex items-center gap-3">

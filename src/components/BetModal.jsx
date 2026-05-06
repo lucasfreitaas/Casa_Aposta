@@ -13,6 +13,11 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, oddAt
   const [loading, setLoading] = useState(false)
   const [copied, setCopied] = useState(false)
 
+  const {
+    id,
+    modalidade,
+  } = competicao
+
   const valorNum = Number(valor) || 0
   
   // Calcula a nova ODD se a aposta for confirmada
@@ -33,7 +38,7 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, oddAt
     setLoading(true)
     try {
       await addDoc(
-        collection(db, 'competicoes', competicao.id, 'apostas'),
+        collection(db, 'competicoes', id, 'apostas'),
         {
           nomeApostador:       nomeApostador.trim(),
           valor:               valorNum,
@@ -77,7 +82,14 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, oddAt
         {/* Header */}
         <div className="flex items-center justify-between px-6 pt-6 pb-4 border-b border-gray-100">
           <div>
-            <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-0.5">Nova Aposta</p>
+            <div className="flex items-center gap-2 mb-1">
+              <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider">Nova Aposta</p>
+              {modalidade && (
+                <span className="px-1.5 py-0.5 rounded bg-brand-50 text-brand-600 text-[9px] font-black uppercase tracking-tighter border border-brand-100">
+                  {modalidade}
+                </span>
+              )}
+            </div>
             <h2 className="text-lg font-bold text-gray-900 leading-tight">
               Apostando em{' '}
               <span className="text-brand-600">{nomeCompetidor}</span>
