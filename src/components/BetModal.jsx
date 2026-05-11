@@ -30,8 +30,8 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, oddAt
 
   async function handleSubmit(e) {
     e.preventDefault()
-    if (!nomeApostador.trim() || !valor || valorNum <= 0) {
-      toast.error('Preencha seu nome e um valor válido.')
+    if (!nomeApostador.trim() || !valor || valorNum < 5) {
+      toast.error('Preencha seu nome e um valor mínimo de R$ 5,00.')
       return
     }
 
@@ -153,7 +153,7 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, oddAt
               <input
                 id="bet-value"
                 type="number"
-                min="1"
+                min="5"
                 step="0.01"
                 className="input-field pl-10"
                 placeholder="0,00"
@@ -162,6 +162,13 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, oddAt
                 required
               />
             </div>
+            <p className="mt-1.5 text-xs text-gray-400 flex items-center gap-1">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                  d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20A10 10 0 0012 2z" />
+              </svg>
+              Valor mínimo de aposta: <span className="font-semibold text-gray-500">R$ 5,00</span>
+            </p>
           </div>
 
           {/* Retorno estimado (atualiza em tempo real) */}
