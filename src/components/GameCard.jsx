@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useCompeticaoApostas } from '../hooks/useCompeticaoApostas'
 import BettorsTable from './BettorsTable'
 import BetModal from './BetModal'
+import CompetitorPaymentModal from './CompetitorPaymentModal'
 import { db } from '../firebaseConfig'
 import toast from 'react-hot-toast'
 
@@ -10,6 +11,7 @@ import toast from 'react-hot-toast'
  */
 export default function GameCard({ competicao }) {
   const [betTarget, setBetTarget] = useState(null)
+  const [showCompetitorPayment, setShowCompetitorPayment] = useState(false)
 
   const {
     competidor1,
@@ -48,6 +50,7 @@ export default function GameCard({ competicao }) {
   }
 
   const isAberto = status === 'aberto'
+  const isPendente = status === 'pendente'
   const isCancelado = status === 'cancelado'
 
   return (
@@ -79,15 +82,17 @@ export default function GameCard({ competicao }) {
             <div className="flex gap-2">
               <span className={
                 isAberto ? 'badge-open flex-shrink-0' :
+                isPendente ? 'badge-closed bg-amber-50 text-amber-700 border-amber-200 flex-shrink-0' :
                 isCancelado ? 'badge-closed bg-red-50 text-red-600 border-red-200 flex-shrink-0' :
                 'badge-closed flex-shrink-0'
               }>
                 <span className={`w-1.5 h-1.5 rounded-full ${
                   isAberto ? 'bg-emerald-500' :
+                  isPendente ? 'bg-amber-500' :
                   isCancelado ? 'bg-red-500' :
                   'bg-gray-400'
                 }`} />
-                {isAberto ? 'Aberto' : isCancelado ? 'Cancelado' : 'Encerrado'}
+                {isAberto ? 'Aberto' : isPendente ? 'Pendente' : isCancelado ? 'Cancelado' : 'Encerrado'}
               </span>
 
               {isAberto && apostasFechadas && (
@@ -175,6 +180,25 @@ export default function GameCard({ competicao }) {
             </div>
           </div>
         )}
+
+        {isPendente && (
+          <div className="px-5 pb-5">
+            <div className="rounded-xl bg-amber-50 border border-amber-100 p-4 text-center">
+              <p className="text-sm font-bold text-amber-800 mb-1">
+                Aguardando Pagamento dos Competidores
+              </p>
+              <p className="text-xs text-amber-700 mb-3">
+                A banca abrirá após a confirmação do pagamento.
+              </p>
+              <button 
+                onClick={() => setShowCompetitorPayment(true)}
+                className="btn-primary w-full bg-amber-600 hover:bg-amber-700 text-white"
+              >
+                Ver Info de Pagamento
+              </button>
+            </div>
+          </div>
+        )}
       </article>
 
       {/* Modal de aposta */}
@@ -187,6 +211,14 @@ export default function GameCard({ competicao }) {
           totalCompetidor={betTarget.totalCompetidor}
           totalBanca={totalBanca}
           onClose={() => setBetTarget(null)}
+        />
+      )}
+
+      {/* Modal pagamento competidores */}
+      {showCompetitorPayment && (
+        <CompetitorPaymentModal
+          competicao={competicao}
+          onClose={() => setShowCompetitorPayment(false)}
         />
       )}
     </>
