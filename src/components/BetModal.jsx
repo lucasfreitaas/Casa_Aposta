@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore'
 import { db } from '../firebaseConfig'
-import { PIX_DISPLAY, PIX_KEY } from '../constants'
+import { PIX_DISPLAY } from '../constants'
 import toast from 'react-hot-toast'
 
 /**
@@ -67,7 +67,7 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, oddAt
   }
 
   function handleCopyPix() {
-    navigator.clipboard.writeText(PIX_KEY).then(() => {
+    navigator.clipboard.writeText(PIX_DISPLAY).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 2500)
     })
@@ -203,25 +203,39 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, oddAt
             </div>
 
             {/* Chave PIX para copiar */}
-            <div className="flex items-center gap-2">
-              <code className="flex-1 text-sm font-mono text-brand-800 bg-white border border-brand-200
-                               rounded-lg px-3 py-2 truncate select-all">
-                {PIX_DISPLAY}
-              </code>
+            <div className="flex flex-col items-center gap-2">
+              <p className="text-xs text-brand-600/80 text-center">
+                Escaneie o QR Code ou copie a chave PIX abaixo:
+              </p>
               <button
                 type="button"
                 id="copy-pix-btn"
                 onClick={handleCopyPix}
-                className="flex-shrink-0 px-3 py-2 rounded-lg bg-brand-600 text-white text-xs
-                           font-semibold hover:bg-brand-700 active:scale-95 transition-all"
+                className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl
+                           bg-brand-600 text-white font-bold text-sm
+                           hover:bg-brand-700 active:scale-95 transition-all shadow-sm"
               >
-                {copied ? '✓ Copiado' : 'Copiar'}
+                {copied ? (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Chave Copiada!
+                  </>
+                ) : (
+                  <>
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                        d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                    </svg>
+                    Copiar Chave PIX · {PIX_DISPLAY}
+                  </>
+                )}
               </button>
+              <p className="text-xs text-brand-600/60 text-center">
+                O depósito é baseado em confiança — obrigado!
+              </p>
             </div>
-            <p className="text-xs text-brand-600/80">
-              Escaneie o QR Code ou copie a chave PIX.
-              O depósito é baseado em confiança — obrigado!
-            </p>
           </div>
 
           {/* Actions */}
