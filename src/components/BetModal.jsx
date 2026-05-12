@@ -19,12 +19,21 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, oddAt
   } = competicao
 
   const valorNum = Number(valor) || 0
-  
-  // Calcula a nova ODD se a aposta for confirmada
-  // Se não houver aposta ou a nova banca for 0 (impossível se valor > 0), mantém a ODD atual
+
+  // Total apostado no lado CONTRÁRIO ao escolhido
+  const totalOutroLado = totalBanca - totalCompetidor
+
+  // A ODD só é calculada quando os DOIS lados têm apostas.
+  // Enquanto apenas um lado tem apostas, a ODD permanece em 1.00.
+  const ambosOsLadosTemAposta = totalOutroLado > 0
+
+  // Simula a nova ODD caso a aposta seja confirmada
   const novaBanca = totalBanca + valorNum
   const novoTotalCompetidor = totalCompetidor + valorNum
-  const oddSimulada = novoTotalCompetidor > 0 ? (novaBanca / novoTotalCompetidor) : oddAtual
+  // Só simula ODD se o outro lado já tiver apostas (caso contrário continua 1.00)
+  const oddSimulada = ambosOsLadosTemAposta && novoTotalCompetidor > 0
+    ? novaBanca / novoTotalCompetidor
+    : 1.0
 
   const retornoEstimado = valorNum * oddSimulada
 
@@ -111,7 +120,7 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, oddAt
         <div className="px-6 pt-4 flex gap-3">
           <div className="flex-1 rounded-xl bg-brand-50 border border-brand-100 px-4 py-3 text-center transition-all">
             <p className="text-[10px] font-semibold text-brand-500 uppercase tracking-widest mb-0.5">
-              {valorNum > 0 ? 'Nova ODD' : 'ODD Atual'}
+              {valorNum > 0 && ambosOsLadosTemAposta ? 'Nova ODD' : 'ODD Atual'}
             </p>
             <p className="text-2xl font-black text-brand-700">
               {oddSimulada.toFixed(2)}x
@@ -124,6 +133,19 @@ export default function BetModal({ competicao, competidor, nomeCompetidor, oddAt
             </p>
           </div>
         </div>
+
+        {/* Aviso: ODD só é atualizada quando os dois lados têm apostas */}
+        {!ambosOsLadosTemAposta && (
+          <div className="mx-6 mt-3 flex items-start gap-2 rounded-xl bg-amber-50 border border-amber-200 px-4 py-3">
+            <svg className="w-4 h-4 text-amber-500 mt-0.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2}
+                d="M12 9v2m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z" />
+            </svg>
+            <p className="text-xs text-amber-700 leading-snug">
+              <span className="font-bold">ODD em 1.00 —</span> a ODD só será atualizada quando houver apostas nos <span className="font-bold">dois competidores</span>.
+            </p>
+          </div>
+        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="px-6 py-5 space-y-4">

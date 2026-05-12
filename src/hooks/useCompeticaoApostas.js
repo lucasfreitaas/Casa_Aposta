@@ -7,7 +7,8 @@ import { db } from '../firebaseConfig'
  * separadas por competidor, com cálculo de ODDs pari-mutuel.
  *
  * Regras de ODD:
- * - Começa em 2.00 quando não há apostas nos dois lados
+ * - Começa em 1.00 enquanto não há apostas nos DOIS lados
+ * - ODD só é calculada quando ambos os competidores tiverem apostas
  * - ODD = totalBanca / totalApostadoNoCompetidor (pari-mutuel)
  * - Garante que pagamentos nunca ultrapassem o valor total da banca
  */
@@ -42,9 +43,9 @@ export function useCompeticaoApostas(competicaoId) {
 
   // Cálculo de ODD pari-mutuel
   // ODD = totalBanca / totalDoLado
-  // Quando não há apostas nos dois lados, ODD padrão = 2.00
-  let oddComp1 = 2.0
-  let oddComp2 = 2.0
+  // ODD só é calculada quando há apostas nos DOIS lados; caso contrário permanece em 1.00
+  let oddComp1 = 1.0
+  let oddComp2 = 1.0
 
   if (totalBanca > 0 && totalComp1 > 0 && totalComp2 > 0) {
     oddComp1 = totalBanca / totalComp1
